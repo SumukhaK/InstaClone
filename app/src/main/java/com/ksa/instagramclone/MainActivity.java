@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         mCurrentUser=mAuth.getCurrentUser();
-        Log.v("FireBaseInsta" ,"mCurrentUser  "+mCurrentUser.toString());
+        //Log.v("FireBaseInsta" ,"mCurrentUser  "+mCurrentUser.toString());
         if(mCurrentUser != null) {
             if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                 Log.v("FireBaseInsta" ,"mCurrentUser  "+FirebaseAuth.getInstance().getCurrentUser().toString() );
