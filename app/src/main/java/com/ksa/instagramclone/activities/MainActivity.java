@@ -1,4 +1,4 @@
-package com.ksa.instagramclone;
+package com.ksa.instagramclone.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.ksa.instagramclone.R;
 
 public class MainActivity extends AppCompatActivity {
 

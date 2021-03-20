@@ -1,11 +1,11 @@
-package com.ksa.instagramclone;
+package com.ksa.instagramclone.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,13 +19,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.hendraanggrian.appcompat.socialview.Hashtag;
+import com.hendraanggrian.appcompat.widget.HashtagArrayAdapter;
 import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
+import com.ksa.instagramclone.R;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 
@@ -165,7 +170,7 @@ public class PostActivity extends AppCompatActivity {
                                 map.clear();
                                 map.put("tag", tag.toLowerCase());
                                 map.put("postId", postId);
-                                hashtagRef.child(tag.toLowerCase()).setValue(map);
+                                hashtagRef.child(tag.toLowerCase()).child(postId).setValue(map);
                             }
                             progressDialog.dismiss();
                             startActivity(new Intent(PostActivity.this, HomeActivity.class));
@@ -212,5 +217,28 @@ public class PostActivity extends AppCompatActivity {
             startActivity(new Intent(PostActivity.this,HomeActivity.class));
         }
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.v("Post ","onStart()");
+        ArrayAdapter<Hashtag> hashtagArrayAdapter = new HashtagArrayAdapter<>(getApplicationContext());
+        FirebaseDatabase.getInstance().getReference().child("Hashtags").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+                    Log.v("Post ",dataSnapshot.toString());
+                    hashtagArrayAdapter.add(new Hashtag(snapshot.getKey(), (int) dataSnapshot.getChildrenCount()));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        Log.v("PostHashtagAdapter ","setHashtagAdapter "+hashtagArrayAdapter.toString());
+        descriptionStv.setHashtagAdapter(hashtagArrayAdapter);
     }
 }

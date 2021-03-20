@@ -1,26 +1,20 @@
-package com.ksa.instagramclone;
+package com.ksa.instagramclone.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.ksa.instagramclone.R;
 
 import java.util.HashMap;
 
@@ -74,7 +68,9 @@ public class RegisterActivity extends AppCompatActivity {
 
                 HashMap<String,Object> map = new HashMap<>();
                 map.put("email",authResult.getUser().getEmail());
-                map.put("userName",authResult.getUser().getDisplayName());
+                //map.put("userName",authResult.getUser().getDisplayName());
+                map.put("userName",userNameSt);
+                map.put("name",fullNameSt);
                 map.put("id",authResult.getUser().getUid());
                 map.put("bio","");
                 map.put("image_url","default");
