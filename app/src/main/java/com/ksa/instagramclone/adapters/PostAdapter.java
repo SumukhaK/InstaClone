@@ -1,6 +1,8 @@
 package com.ksa.instagramclone.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hendraanggrian.appcompat.widget.SocialTextView;
 import com.ksa.instagramclone.R;
+import com.ksa.instagramclone.activities.CommentsActivity;
 import com.ksa.instagramclone.models.PostModel;
 import com.ksa.instagramclone.models.UserModel;
 import com.squareup.picasso.Picasso;
@@ -54,7 +57,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         PostModel postModel = postModelArrayList.get(position);
         if(postModel.getImageURL().equals("default")){
 
-        }else {
+        }else{
             Picasso.get().load(postModel.getImageURL()).into(holder.postImage);
         }
         holder.descriptionTv.setText(postModel.getDescription());
@@ -78,6 +81,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
         isLiked(postModel.getPostId(),holder.likeImage);
         numOfLikes(postModel.getPostId(),holder.numOfLikesTv);
+        numOfComments(postModel.getPostId(),holder.numOfCommentsTv);
 
         holder.likeImage.setOnClickListener(v -> {
             //Log.v("POST","likeImage.setOnClickListener "+holder.likeImage.getTag());
@@ -92,6 +96,29 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             }
         });
 
+        holder.commentImage.setOnClickListener(v -> context.startActivity(new Intent(v.getContext(), CommentsActivity.class).putExtra("postId",postModel.getPostId())
+                .putExtra("authId",postModel.getPublisher())));
+
+
+        holder.numOfCommentsTv.setOnClickListener(v -> context.startActivity(new Intent(v.getContext(), CommentsActivity.class).putExtra("postId",postModel.getPostId())
+                .putExtra("authId",postModel.getPublisher())));
+    }
+
+    private void numOfComments(String postId, TextView numOfCommentsTv) {
+
+        FirebaseDatabase.getInstance().getReference().child("comments").child(postId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                numOfCommentsTv.setText(snapshot.getChildrenCount()+" Comments");
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void isLiked(String postId, ImageView imageView) {
