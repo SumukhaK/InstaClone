@@ -1,6 +1,7 @@
 package com.ksa.instagramclone.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ksa.instagramclone.R;
+import com.ksa.instagramclone.activities.HomeActivity;
 import com.ksa.instagramclone.models.Commentmodel;
 import com.ksa.instagramclone.models.UserModel;
 import com.squareup.picasso.Picasso;
@@ -73,7 +75,12 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
                 }
         );
 
+        holder.profileImageview.setOnClickListener(v -> {
+            Intent intent = new Intent(context, HomeActivity.class);
+            intent.putExtra("publisherId",commentmodel.getPublisher());
+            context.startActivity(intent);
 
+        });
 
     }
 

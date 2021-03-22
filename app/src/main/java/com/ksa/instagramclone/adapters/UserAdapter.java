@@ -1,6 +1,7 @@
 package com.ksa.instagramclone.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ksa.instagramclone.R;
+import com.ksa.instagramclone.activities.HomeActivity;
 import com.ksa.instagramclone.models.UserModel;
 import com.squareup.picasso.Picasso;
 
@@ -64,26 +66,31 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
             holder.followBtn.setVisibility(View.GONE);
         }
 
-        holder.followBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.followBtn.setOnClickListener(v -> {
 
-                if(holder.followBtn.getText().toString().equals("Follow")){
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
-                            .child("following").child(user.get_id()).setValue(true);
+            if(holder.followBtn.getText().toString().equals("Follow")){
+                FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
+                        .child("following").child(user.get_id()).setValue(true);
 
-                    FirebaseDatabase.getInstance().getReference().child("follow")
-                            .child(user.get_id()).child("followers").child(firebaseUser.getUid()).setValue(true);
-                }else{
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
-                            .child("following").child(user.get_id()).removeValue();
+                FirebaseDatabase.getInstance().getReference().child("follow")
+                        .child(user.get_id()).child("followers").child(firebaseUser.getUid()).setValue(true);
+            }else{
+                FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
+                        .child("following").child(user.get_id()).removeValue();
 
-                    FirebaseDatabase.getInstance().getReference().child("follow")
-                            .child(user.get_id()).child("followers").child(firebaseUser.getUid()).removeValue();
+                FirebaseDatabase.getInstance().getReference().child("follow")
+                        .child(user.get_id()).child("followers").child(firebaseUser.getUid()).removeValue();
 
-                }
             }
         });
+
+        holder.profileImageView.setOnClickListener(v -> {
+
+            Intent intent = new Intent(context, HomeActivity.class);
+            intent.putExtra("publisherId",user.get_id());
+            context.startActivity(intent);
+        });
+
     }
 
     private void isFollowed(String id, Button followBtn) {

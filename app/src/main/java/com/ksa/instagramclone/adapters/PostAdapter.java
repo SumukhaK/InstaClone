@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -58,7 +59,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         if(postModel.getImageURL().equals("default")){
 
         }else{
-            Picasso.get().load(postModel.getImageURL()).into(holder.postImage);
+            CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(context);
+            circularProgressDrawable.setStrokeWidth(15f);
+            circularProgressDrawable.setCenterRadius(50f);
+            circularProgressDrawable.start();
+            Picasso.get().load(postModel.getImageURL()).placeholder(circularProgressDrawable
+            ).into(holder.postImage);
         }
         holder.descriptionTv.setText(postModel.getDescription());
 

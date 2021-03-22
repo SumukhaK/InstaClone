@@ -84,8 +84,8 @@ public class CommentsActivity extends AppCompatActivity {
         });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CommentsActivity.this);
-        linearLayoutManager.setStackFromEnd(true);
-        linearLayoutManager.setReverseLayout(true);
+        /*linearLayoutManager.setStackFromEnd(true);
+        linearLayoutManager.setReverseLayout(true);*/
         commentsList.setLayoutManager(linearLayoutManager);
 
         commentsAdapter = new CommentsAdapter(CommentsActivity.this,commentmodels);
@@ -130,7 +130,7 @@ public class CommentsActivity extends AppCompatActivity {
             if(task.isSuccessful()){
                 Toast.makeText(CommentsActivity.this,"Comment added successfully !!..",Toast.LENGTH_LONG).show();
                 addCommentsEt.setText("");
-                finish();
+                /*finish();*/
             }else {
                 Toast.makeText(CommentsActivity.this,"Couldn't add comment, please try again later !!..",Toast.LENGTH_LONG).show();
             }
