@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -22,10 +23,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ksa.instagramclone.R;
+import com.ksa.instagramclone.adapters.PhotoAdapter;
+import com.ksa.instagramclone.adapters.PostAdapter;
 import com.ksa.instagramclone.models.PostModel;
 import com.ksa.instagramclone.models.UserModel;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -45,7 +50,11 @@ public class ProfileFragment extends Fragment {
     private ImageView optionsIv,myPicsIv,savedPicsIv;
     private RecyclerView picsList,savedPicsList;
     private FirebaseUser firebaseUser;
-
+    private PhotoAdapter photoAdapter;
+    private PhotoAdapter savedPhotoAdapter;
+    //private PostAdapter postAdapter;
+    private ArrayList<PostModel> postModels;
+    private ArrayList<PostModel> postSavedModels;
     private String profileId;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -121,13 +130,167 @@ public class ProfileFragment extends Fragment {
         picsList= profileView.findViewById(R.id.pics_recyclerview);
         savedPicsList= profileView.findViewById(R.id.savedpics_recyclerview);
 
+        if(profileId.equals(firebaseUser.getUid())){
+            editProfileBtn.setText(R.string.caps_edit_profile);
+        }else{
+            checkFollowingStatus();
+        }
+
+
+        picsList.setHasFixedSize(true);
+        savedPicsList.setHasFixedSize(true);
+        picsList.setLayoutManager(new GridLayoutManager(getContext(),3));
+        savedPicsList.setLayoutManager(new GridLayoutManager(getContext(),2));
+        postModels = new ArrayList<>();
+        postSavedModels = new ArrayList<>();
+
+        photoAdapter = new PhotoAdapter(getContext(),postModels);
+        picsList.setAdapter(photoAdapter);
+
+        //postAdapter = new PostAdapter(getContext(),postSavedModels);
+        savedPhotoAdapter = new PhotoAdapter(getContext(),postSavedModels);
+        savedPicsList.setAdapter(savedPhotoAdapter);
 
         userInfo();
         getFollowCounts();
         getPostsCount();
+        getMyPhotos();
+        getSavedPosts();
 
+        editProfileBtn.setOnClickListener(v -> {
+
+            String btnText = editProfileBtn.getText().toString();
+            if(btnText.equals(R.string.caps_edit_profile)){
+                editProfile();
+            }else if(btnText.equals("Follow")){
+                FirebaseDatabase.getInstance().getReference().child("Follow").
+                        child(firebaseUser.getUid()).child("following").child(profileId).setValue(true);
+
+                FirebaseDatabase.getInstance().getReference().child("Follow").
+                        child(profileId).child("followers").child(firebaseUser.getUid()).setValue(true);
+            }else{
+                FirebaseDatabase.getInstance().getReference().child("Follow").
+                        child(firebaseUser.getUid()).child("following").child(profileId).removeValue();
+
+                FirebaseDatabase.getInstance().getReference().child("Follow").
+                        child(profileId).child("followers").child(firebaseUser.getUid()).removeValue();
+
+            }
+        });
+
+        savedPicsIv.setOnClickListener(v -> {
+            picsList.setVisibility(View.GONE);
+            savedPicsList.setVisibility(View.VISIBLE);
+
+        });
+
+        myPicsIv.setOnClickListener(v -> {
+            picsList.setVisibility(View.VISIBLE);
+            savedPicsList.setVisibility(View.GONE);
+        });
 
         return profileView;
+    }
+
+    private void getSavedPosts() {
+
+        ArrayList<String> savedPostsIds = new ArrayList<>();
+        FirebaseDatabase.getInstance().getReference().child("saves").child(firebaseUser.getUid()).addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+
+                            savedPostsIds.add(dataSnapshot.getKey());
+                        }
+                        FirebaseDatabase.getInstance().getReference().child("Posts").addValueEventListener(
+                                new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        postSavedModels.clear();
+
+                                        for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                                            PostModel postModel = dataSnapshot.getValue(PostModel.class);
+                                            Log.v("Posts"," "+postModel.toString());
+                                            for(String id:savedPostsIds){
+                                                if(postModel.getPostId().equals(id)) {
+                                                    postSavedModels.add(postModel);
+                                                }
+
+                                            }
+                                        }
+                                        savedPhotoAdapter.notifyDataSetChanged();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                }
+                        );
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                }
+        );
+
+    }
+
+    private void getMyPhotos() {
+
+        FirebaseDatabase.getInstance().getReference().child("Posts").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                postModels.clear();
+
+                for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+                    Log.v("Posts"," "+dataSnapshot.toString());
+                    PostModel postModel = dataSnapshot.getValue(PostModel.class);
+                    Log.v("Posts"," "+postModel.toString());
+                    if(postModel.getPublisher().equals(profileId)){
+                        postModels.add(postModel);
+                    }
+                }
+
+                Collections.reverse(postModels);
+                photoAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void editProfile() {
+
+    }
+
+    private void checkFollowingStatus() {
+        FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid()).child("following").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if(snapshot.child(profileId).exists()){
+                    editProfileBtn.setText("Following");
+                }else {
+                    editProfileBtn.setText("Follow");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void getPostsCount() {
@@ -155,7 +318,7 @@ public class ProfileFragment extends Fragment {
 
     private void getFollowCounts() {
 
-        FirebaseDatabase.getInstance().getReference().child("follow").child(profileId)
+        FirebaseDatabase.getInstance().getReference().child("Follow").child(profileId)
                 .child("followers").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

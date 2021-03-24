@@ -72,13 +72,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
                 FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
                         .child("following").child(user.get_id()).setValue(true);
 
-                FirebaseDatabase.getInstance().getReference().child("follow")
+                FirebaseDatabase.getInstance().getReference().child("Follow")
                         .child(user.get_id()).child("followers").child(firebaseUser.getUid()).setValue(true);
             }else{
                 FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
                         .child("following").child(user.get_id()).removeValue();
 
-                FirebaseDatabase.getInstance().getReference().child("follow")
+                FirebaseDatabase.getInstance().getReference().child("Follow")
                         .child(user.get_id()).child("followers").child(firebaseUser.getUid()).removeValue();
 
             }

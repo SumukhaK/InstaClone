@@ -1,12 +1,21 @@
 package com.ksa.instagramclone.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.FirebaseError;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ksa.instagramclone.R;
 import com.ksa.instagramclone.fragments.HomeFragment;
 import com.ksa.instagramclone.fragments.NotificationFragment;
@@ -70,4 +79,25 @@ public class HomeActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
         }
     }
+
+    /*public void moveFirebaseRecord()
+    {
+        FirebaseDatabase.getInstance().getReference().child("follow").addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                FirebaseDatabase.getInstance().getReference().child("Follow").setValue(dataSnapshot.getValue()).addOnCompleteListener(task -> {
+
+                    Log.v("moveFirebaseRecord",   " "+task.isSuccessful());
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.v("moveFirebaseRecord",   "error "+error);
+            }
+
+        });
+    }*/
 }

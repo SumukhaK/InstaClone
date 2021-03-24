@@ -2,13 +2,18 @@ package com.ksa.instagramclone.models;
 
 public class Commentmodel {
 
+
+
     private String comment;
+    private String id;
     private String publisher;
+
 
     public Commentmodel() {
     }
 
-    public Commentmodel(String comment, String publisher) {
+    public Commentmodel(String id, String comment, String publisher) {
+        this.id = id;
         this.comment = comment;
         this.publisher = publisher;
     }
@@ -32,8 +37,19 @@ public class Commentmodel {
     @Override
     public String toString() {
         return "Commentmodel{" +
-                "comment='" + comment + '\'' +
+                "id='" + id + '\'' +
+                ", comment='" + comment + '\'' +
                 ", publisher='" + publisher + '\'' +
                 '}';
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
 }

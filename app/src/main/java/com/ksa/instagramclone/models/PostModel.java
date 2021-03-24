@@ -48,4 +48,14 @@ public class PostModel {
     public void setPublisher(String publisher) {
         this.publisher = publisher;
     }
+
+    @Override
+    public String toString() {
+        return "PostModel{" +
+                "description='" + description + '\'' +
+                ", imageURL='" + imageURL + '\'' +
+                ", postId='" + postId + '\'' +
+                ", publisher='" + publisher + '\'' +
+                '}';
+    }
 }

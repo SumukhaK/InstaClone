@@ -88,6 +88,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         isLiked(postModel.getPostId(),holder.likeImage);
         numOfLikes(postModel.getPostId(),holder.numOfLikesTv);
         numOfComments(postModel.getPostId(),holder.numOfCommentsTv);
+        isSaved(postModel.getPostId(),holder.saveImage);
 
         holder.likeImage.setOnClickListener(v -> {
             //Log.v("POST","likeImage.setOnClickListener "+holder.likeImage.getTag());
@@ -108,6 +109,40 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
         holder.numOfCommentsTv.setOnClickListener(v -> context.startActivity(new Intent(v.getContext(), CommentsActivity.class).putExtra("postId",postModel.getPostId())
                 .putExtra("authId",postModel.getPublisher())));
+
+        holder.saveImage.setOnClickListener(v -> {
+
+            if(holder.saveImage.getTag().equals("save")){
+                FirebaseDatabase.getInstance().getReference().child("saves").child(firebaseUser.getUid())
+                        .child(postModel.getPostId()).setValue(true);
+            }else{
+                FirebaseDatabase.getInstance().getReference().child("saves").child(firebaseUser.getUid())
+                        .child(postModel.getPostId()).removeValue();
+            }
+        });
+    }
+
+    private void isSaved(String postId, ImageView saveImage) {
+
+        FirebaseDatabase.getInstance().getReference().child("saves").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if(snapshot.child(postId).exists()){
+                    saveImage.setImageResource(R.drawable.ic_my_saved_pictures);
+                    saveImage.setTag("saved");
+                }else{
+                    saveImage.setImageResource(R.drawable.ic_save);
+                    saveImage.setTag("save");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void numOfComments(String postId, TextView numOfCommentsTv) {

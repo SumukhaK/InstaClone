@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ksa.instagramclone.R;
@@ -102,9 +103,11 @@ public class CommentsActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         commentmodels.clear();
                         for(DataSnapshot dataSnapshot:snapshot.getChildren()){
-                            Log.v("Comment"," "+dataSnapshot.toString());
-                            Commentmodel commentmodel = dataSnapshot.getValue(Commentmodel.class);
-                            Log.v("Comment"," "+commentmodel.toString());
+                            Log.v("CommentAll"," "+dataSnapshot.toString());
+                            //Map<String,String> map=(Map<String,String>)dataSnapshot.getValue();
+                            // Commentmodel commentmodel  = new Commentmodel(map.get("id"),map.get("comment"),map.get("publisher"));
+                           Commentmodel commentmodel = dataSnapshot.getValue(Commentmodel.class);
+                            Log.v("CommentModel"," "+commentmodel.toString());
                             commentmodels.add(commentmodel);
                         }
                         commentsAdapter.notifyDataSetChanged();
@@ -120,12 +123,18 @@ public class CommentsActivity extends AppCompatActivity {
 
     private void addCommentToDb(String comment) {
 
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("comments").child(postId);
+        String pushId =reference.push().getKey();
+        //String pushId =String.valueOf(System.currentTimeMillis());
         HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put("id",pushId);
         hashMap.put("comment",comment);
         hashMap.put("publisher",currentUser.getUid());
 
-        FirebaseDatabase.getInstance().getReference().child("comments").child(postId)
-                .push().setValue(hashMap).addOnCompleteListener(task -> {
+        Log.v("CommentsMap "," "+hashMap.toString());
+        //reference.child(pushId).push().setValue(hashMap).addOnCompleteListener(task -> {
+        reference.push().setValue(hashMap).addOnCompleteListener(task -> {
 
             if(task.isSuccessful()){
                 Toast.makeText(CommentsActivity.this,"Comment added successfully !!..",Toast.LENGTH_LONG).show();
