@@ -1,6 +1,7 @@
 package com.ksa.instagramclone.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +9,12 @@ import android.widget.ImageView;
 
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ksa.instagramclone.R;
+import com.ksa.instagramclone.fragments.PostDetails;
 import com.ksa.instagramclone.models.PostModel;
 import com.squareup.picasso.Picasso;
 
@@ -40,6 +44,17 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>{
 
         PostModel postModel = postModels.get(position);
         Picasso.get().load(postModel.getImageURL()).into(holder.photoImage);
+
+        holder.photoImage.setOnClickListener(v -> {
+
+            String postId = postModels.get(position).getPostId();
+            Bundle bundle = new Bundle();
+            bundle.putString(PostDetails.ARG_PARAM1, postId);
+            Fragment fragment = new PostDetails();
+            fragment.setArguments(bundle);
+            ((FragmentActivity)context).getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container,fragment).commit();
+        });
     }
 
     @Override
