@@ -112,6 +112,7 @@ public class ProfileFragment extends Fragment {
         }else{
             Log.v("Profile else"," "+data);
             profileId = data;
+
         }
         //getContext().getSharedPreferences("Profile",MODE_PRIVATE).edit().putString("publisherId","").apply();
         Log.v("Profile"," "+profileId);
@@ -133,6 +134,7 @@ public class ProfileFragment extends Fragment {
         if(profileId.equals(firebaseUser.getUid())){
             editProfileBtn.setText(R.string.caps_edit_profile);
         }else{
+            savedPicsIv.setVisibility(View.GONE);
             checkFollowingStatus();
         }
 

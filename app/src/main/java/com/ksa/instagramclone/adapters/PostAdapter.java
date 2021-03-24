@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.hendraanggrian.appcompat.widget.SocialTextView;
 import com.ksa.instagramclone.R;
 import com.ksa.instagramclone.activities.CommentsActivity;
+import com.ksa.instagramclone.activities.HomeActivity;
 import com.ksa.instagramclone.models.PostModel;
 import com.ksa.instagramclone.models.UserModel;
 import com.squareup.picasso.Picasso;
@@ -119,6 +120,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                 FirebaseDatabase.getInstance().getReference().child("saves").child(firebaseUser.getUid())
                         .child(postModel.getPostId()).removeValue();
             }
+        });
+
+        holder.profileImageView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, HomeActivity.class);
+            intent.putExtra("publisherId",postModel.getPublisher());
+            context.startActivity(intent);
         });
     }
 
