@@ -1,5 +1,6 @@
 package com.ksa.instagramclone.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,12 +20,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ksa.instagramclone.R;
+import com.ksa.instagramclone.activities.EditProfileActivity;
 import com.ksa.instagramclone.adapters.PhotoAdapter;
-import com.ksa.instagramclone.adapters.PostAdapter;
 import com.ksa.instagramclone.models.PostModel;
 import com.ksa.instagramclone.models.UserModel;
 import com.squareup.picasso.Picasso;
@@ -162,7 +162,7 @@ public class ProfileFragment extends Fragment {
         editProfileBtn.setOnClickListener(v -> {
 
             String btnText = editProfileBtn.getText().toString();
-            if(btnText.equals(R.string.caps_edit_profile)){
+            if(btnText.equalsIgnoreCase("Edit Profile")){
                 editProfile();
             }else if(btnText.equals("Follow")){
                 FirebaseDatabase.getInstance().getReference().child("Follow").
@@ -274,6 +274,7 @@ public class ProfileFragment extends Fragment {
 
     private void editProfile() {
 
+        startActivity(new Intent(getActivity(), EditProfileActivity.class));
     }
 
     private void checkFollowingStatus() {

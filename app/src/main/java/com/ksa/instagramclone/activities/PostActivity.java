@@ -130,56 +130,51 @@ public class PostActivity extends AppCompatActivity {
 
 
     private void uploadFile() {
+
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Uploading Image...");
         progressDialog.show();
 
         if (imageUri != null) {
             StorageReference storageReference = FirebaseStorage.getInstance().getReference("Posts").child(imageUri.getLastPathSegment());
-            storageReference.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
-                    }
-                    return storageReference.getDownloadUrl();
+            storageReference.putFile(imageUri).continueWithTask(task -> {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
                 }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
-                        imageURL = downloadUri.toString();
+                return storageReference.getDownloadUrl();
+            }).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    imageURL = downloadUri.toString();
 
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
-                        String postId = reference.push().getKey();
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put("postId", postId);
-                        map.put("imageURL", imageURL);
-                        map.put("description", descriptionStv.getText().toString());
-                        map.put("publisher", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+                    String postId = reference.push().getKey();
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("postId", postId);
+                    map.put("imageURL", imageURL);
+                    map.put("description", descriptionStv.getText().toString());
+                    map.put("publisher", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                        reference.child(postId).setValue(map);
+                    reference.child(postId).setValue(map);
 
-                        DatabaseReference hashtagRef = FirebaseDatabase.getInstance().getReference().child("Hashtags");
-                        List<String> list = descriptionStv.getHashtags();
+                    DatabaseReference hashtagRef = FirebaseDatabase.getInstance().getReference().child("Hashtags");
+                    List<String> list = descriptionStv.getHashtags();
 
-                        if (!list.isEmpty()) {
+                    if (!list.isEmpty()) {
 
-                            for (String tag : list) {
-                                map.clear();
-                                map.put("tag", tag.toLowerCase());
-                                map.put("postId", postId);
-                                hashtagRef.child(tag.toLowerCase()).child(postId).setValue(map);
-                            }
-                            progressDialog.dismiss();
-                            startActivity(new Intent(PostActivity.this, HomeActivity.class));
-                            finishAffinity();
-                            Toast.makeText(PostActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                        for (String tag : list) {
+                            map.clear();
+                            map.put("tag", tag.toLowerCase());
+                            map.put("postId", postId);
+                            hashtagRef.child(tag.toLowerCase()).child(postId).setValue(map);
                         }
-                    } else {
-                        Toast.makeText(PostActivity.this, "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                        startActivity(new Intent(PostActivity.this, HomeActivity.class));
+                        finishAffinity();
+                        Toast.makeText(PostActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(PostActivity.this, "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
