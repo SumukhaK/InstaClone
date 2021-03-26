@@ -56,10 +56,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         NotificationModel notificationModel = notificationModels.get(position);
-
+        Log.v("NotificationAdapter"," "+notificationModel.toString());
         getuser(holder.userNameTv,holder.profileImageView,notificationModel);
-
-        if(notificationModel.isPost()){
+        holder.contentTextview.setText(""+notificationModel.getText());
+        if(notificationModel.getIsPost().equalsIgnoreCase("true")){
             holder.postImageview.setVisibility(View.VISIBLE);
             getPostImage(holder.postImageview,notificationModel.getPostId());
         }else{
@@ -67,7 +67,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
 
         holder.notificationItemLayout.setOnClickListener(v -> {
-            if(notificationModel.isPost()) {
+            if(notificationModel.getIsPost().equalsIgnoreCase("true")) {
 
                 String postId = notificationModel.getPostId();
                 Bundle bundle = new Bundle();

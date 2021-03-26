@@ -24,6 +24,7 @@ import com.ksa.instagramclone.models.UserModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -74,6 +75,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
 
                 FirebaseDatabase.getInstance().getReference().child("Follow")
                         .child(user.get_id()).child("followers").child(firebaseUser.getUid()).setValue(true);
+
+                addNotification(firebaseUser.getUid());
             }else{
                 FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
                         .child("following").child(user.get_id()).removeValue();
@@ -91,6 +94,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
             context.startActivity(intent);
         });
 
+    }
+
+    private void addNotification(String uid) {
+
+
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put("userId",uid);
+        hashMap.put("text","Started following you");
+        hashMap.put("postId","");
+        hashMap.put("isPost","false");
+
+        FirebaseDatabase.getInstance().getReference().child("Notifications").
+                child(firebaseUser.getUid()).push().setValue(hashMap);
     }
 
     private void isFollowed(String id, Button followBtn) {

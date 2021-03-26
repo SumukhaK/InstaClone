@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ksa.instagramclone.R;
 import com.ksa.instagramclone.activities.EditProfileActivity;
+import com.ksa.instagramclone.activities.OptionsActivity;
 import com.ksa.instagramclone.adapters.PhotoAdapter;
 import com.ksa.instagramclone.models.PostModel;
 import com.ksa.instagramclone.models.UserModel;
@@ -190,6 +191,9 @@ public class ProfileFragment extends Fragment {
             picsList.setVisibility(View.VISIBLE);
             savedPicsList.setVisibility(View.GONE);
         });
+
+
+        optionsIv.setOnClickListener(v -> startActivity(new Intent(getContext(), OptionsActivity.class)));
 
         return profileView;
     }

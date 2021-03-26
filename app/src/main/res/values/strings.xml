@@ -19,4 +19,6 @@
     <string name="notification_content">Here goes the contents of notification</string>
     <string name="change_photo">Change Photo</string>
     <string name="save">Save</string>
+    <string name="settings">Settings</string>
+    <string name="logout">Logout</string>
 </resources>

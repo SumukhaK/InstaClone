@@ -5,12 +5,12 @@ public class NotificationModel {
     private String userId;
     private String text;
     private String postId;
-    private boolean isPost;
+    private String isPost;
 
     public NotificationModel() {
     }
 
-    public NotificationModel(String userId, String text, String postId, boolean isPost) {
+    public NotificationModel(String userId, String text, String postId, String isPost) {
         this.userId = userId;
         this.text = text;
         this.postId = postId;
@@ -41,11 +41,21 @@ public class NotificationModel {
         this.postId = postId;
     }
 
-    public boolean isPost() {
+    public String getIsPost() {
         return isPost;
     }
 
-    public void setPost(boolean post) {
-        isPost = post;
+    public void setIsPost(String isPost) {
+        this.isPost = isPost;
+    }
+
+    @Override
+    public String toString() {
+        return "NotificationModel{" +
+                "userId='" + userId + '\'' +
+                ", text='" + text + '\'' +
+                ", postId='" + postId + '\'' +
+                ", isPost=" + isPost +
+                '}';
     }
 }

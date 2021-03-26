@@ -29,6 +29,7 @@ import com.ksa.instagramclone.models.UserModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -96,6 +97,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             if(holder.likeImage.getTag().equals("Like")) {
                 FirebaseDatabase.getInstance().getReference().child("Likes").child(postModel.getPostId())
                         .child(firebaseUser.getUid()).setValue(true);
+
+                addNotification(postModel.getPostId(),postModel.getPublisher());
                 //Log.v("POST","equals(\"like\")");
             }else{
                 FirebaseDatabase.getInstance().getReference().child("Likes").child(postModel.getPostId())
@@ -127,6 +130,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             intent.putExtra("publisherId",postModel.getPublisher());
             context.startActivity(intent);
         });
+    }
+
+    private void addNotification(String postId, String publisher) {
+
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put("userId",publisher);
+        hashMap.put("text","Liked your post");
+        hashMap.put("postId",postId);
+        hashMap.put("isPost","true");
+
+        FirebaseDatabase.getInstance().getReference().child("Notifications").
+                child(firebaseUser.getUid()).push().setValue(hashMap);
+
     }
 
     private void isSaved(String postId, ImageView saveImage) {
