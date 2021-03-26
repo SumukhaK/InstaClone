@@ -118,12 +118,10 @@ public class EditProfileActivity extends AppCompatActivity {
                 updateChildren(hashMap).addOnSuccessListener(aVoid -> {
             progressDialog.dismiss();
             Toast.makeText(EditProfileActivity.this,"Profile updated Successfully !!..",Toast.LENGTH_LONG).show();
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                progressDialog.dismiss();
-                Toast.makeText(EditProfileActivity.this,"Update failed ! Please try again later..",Toast.LENGTH_LONG).show();
-            }
+            finish();
+        }).addOnFailureListener(e -> {
+            progressDialog.dismiss();
+            Toast.makeText(EditProfileActivity.this,"Update failed ! Please try again later..",Toast.LENGTH_LONG).show();
         });
     }
 

@@ -3,12 +3,18 @@ package com.ksa.instagramclone.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ksa.instagramclone.R;
+import com.ksa.instagramclone.adapters.NotificationAdapter;
+import com.ksa.instagramclone.models.NotificationModel;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,6 +23,9 @@ import com.ksa.instagramclone.R;
  */
 public class NotificationFragment extends Fragment {
 
+    private RecyclerView notifications;
+    private NotificationAdapter notificationAdapter;
+    ArrayList<NotificationModel> notificationModels = new ArrayList<>();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -57,10 +66,32 @@ public class NotificationFragment extends Fragment {
         }
     }
 
+    /*
+    private String userId;
+    private String text;
+    private String postId;
+    private boolean isPost;
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notification, container, false);
+
+        View notiView = inflater.inflate(R.layout.fragment_notification, container, false);
+
+        notifications = notiView.findViewById(R.id.notifications_list);
+        notifications.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        notificationAdapter = new NotificationAdapter(getContext(),notificationModels);
+        notifications.setAdapter(notificationAdapter);
+
+        getNotifications();
+
+        return notiView;
+    }
+
+    private void getNotifications() {
+
+        
     }
 }

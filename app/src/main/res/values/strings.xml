@@ -16,6 +16,7 @@
     <string name="fullname">FullName</string>
     <string name="username">UserName</string>
     <string name="bio">Bio</string>
+    <string name="notification_content">Here goes the contents of notification</string>
     <string name="change_photo">Change Photo</string>
     <string name="save">Save</string>
 </resources>
