@@ -362,11 +362,17 @@ public class ProfileFragment extends Fragment {
                         map.get("bio"),map.get("image_url"),map.get("id"));
                 Log.v("Profile",userModel.toString());
 
-                if(userModel.getImage_url().equals("default")){
-                    profileImageview.setImageResource(R.mipmap.ic_launcher_round);
-                }else {
+                try{
                     Picasso.get().load(userModel.getImage_url()).into(profileImageview);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    profileImageview.setImageResource(R.mipmap.ic_launcher_round);
                 }
+               /* if(userModel.getImage_url().equals("default")){
+
+                }else {
+
+                }*/
                 userNameTv.setText(userModel.getUserName());
                 fullNameTv.setText(userModel.getName());
                 bioTv.setText(userModel.getBio());

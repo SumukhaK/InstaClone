@@ -76,10 +76,10 @@ public class EditProfileActivity extends AppCompatActivity {
                         fullNameEt.setText(userModel.getName());
                         userNameEt.setText(userModel.getUserName());
                         bioEt.setText(userModel.getBio());
+                        imageURL = userModel.getImage_url();
                         if(userModel.getImage_url().equals("default")){
                             profileIv.setImageResource(R.mipmap.ic_launcher_round);
                         }else {
-
                             Picasso.get().load(userModel.getImage_url()).into(profileIv);
                         }                }
 
@@ -98,13 +98,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         profileIv.setOnClickListener(v -> CropImage.activity().setCropShape(CropImageView.CropShape.OVAL).start(EditProfileActivity.this));
 
-        saveTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                updateProfile();
-            }
-        });
+        saveTv.setOnClickListener(v -> updateProfile());
 
     }
 
@@ -119,7 +113,7 @@ public class EditProfileActivity extends AppCompatActivity {
         hashMap.put("userName",userNameEt.getText().toString());
         hashMap.put("bio",bioEt.getText().toString());
         hashMap.put("image_url",imageURL);
-
+        Log.v("UpdateProfile",hashMap.toString());
         FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid()).
                 updateChildren(hashMap).addOnSuccessListener(aVoid -> {
             progressDialog.dismiss();
